@@ -1,5 +1,7 @@
 <template>
-  <div class="max-w-2xl min-h-screen px-4 py-16 mx-auto bg-white xl:max-w-3xl">
+  <div
+    class="max-w-2xl min-h-screen px-4 py-16 mx-auto bg-white md:max-w-3xl xl:max-w-4xl lg:px-24"
+  >
     <header>
       <h1
         class="text-3xl font-bold text-center text-black md:text-4xl xl:text-5xl font-display"
@@ -17,7 +19,7 @@
         <p v-else>This is how much you've pledged!</p>
       </div>
     </header>
-    <main class="mt-10 text-black font-body">
+    <main class="mt-10 text-black font-body lg:mt-20">
       <section v-if="!creatorsLoaded">
         <p class="mb-1 text-xl font-bold">Follow these steps</p>
 
