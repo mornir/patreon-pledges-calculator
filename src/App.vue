@@ -1,14 +1,18 @@
 <template>
-  <div class="px-4 py-16">
+  <div class="max-w-2xl min-h-screen px-4 py-16 mx-auto bg-white xl:max-w-3xl">
     <header>
       <h1
-        class="text-3xl font-bold text-center text-black md:text-4xl font-display"
+        class="text-3xl font-bold text-center text-black md:text-4xl xl:text-5xl font-display"
       >
-        <span class="text-4xl text-primary">P</span>atreon
-        <span class="text-4xl text-primary">P</span>ledges Calculator
+        <span class="text-4xl text-primary md:text-5xl xl:text-6xl">P</span
+        >atreon
+        <span class="text-4xl text-primary md:text-5xl xl:text-6xl">P</span
+        >ledges Calculator
       </h1>
 
-      <div class="mt-4 text-xl font-medium text-center text-secondary">
+      <div
+        class="mt-4 text-xl font-medium text-center md:text-2xl text-secondary"
+      >
         <p v-if="!creatorsLoaded">Find out how much you've pledged!</p>
         <p v-else>This is how much you've pledged!</p>
       </div>
@@ -54,9 +58,13 @@
         </div>
       </section>
       <section v-else>
-        <ul class="flex flex-wrap justify-center gap-y-6 gap-x-4">
-          <li v-for="creator in creators" :key="creator.id">
-            <Creator v-bind="creator" />
+        <ul class="flex flex-wrap justify-center gap-4">
+          <li
+            v-for="creator in creators"
+            :key="creator.id"
+            class="w-40 border border-light-gray"
+          >
+            <Creator v-bind="creator" class="p-4" />
           </li>
         </ul>
       </section>

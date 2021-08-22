@@ -1,8 +1,14 @@
 <template>
   <div>
-    <img :src="photo" :alt="name" class="w-24 h-24 rounded-full" />
-    <p class="text-center">{{ name }}</p>
-    <p class="text-center">{{ formatPledge(pledged) }}</p>
+    <img
+      :src="photo"
+      alt=""
+      class="w-24 h-24 mx-auto border-2 rounded-full border-light-gray"
+    />
+    <p class="mt-2 text-lg font-medium text-center text-secondary">
+      {{ name }}
+    </p>
+    <p class="text-xl font-medium text-center">{{ formatPledge(pledged) }}</p>
   </div>
 </template>
 
