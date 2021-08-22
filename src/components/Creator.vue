@@ -28,7 +28,7 @@ export default {
     },
     pledged: {
       type: Number,
-      default: "",
+      default: 0,
       required: true,
     },
   },

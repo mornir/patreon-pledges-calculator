@@ -53,8 +53,8 @@
             >
               Calculate Pledges
             </button>
-            <p v-if="errorMessage" class="py-2 font-semibold text-red-dark">
-              ⚠ {{ errorMessage }}
+            <p v-if="errorMessage" class="py-2 text-xl font-bold text-red-dark">
+              ⚠️ {{ errorMessage }}
             </p>
           </form>
         </div>
@@ -117,13 +117,14 @@ export default {
       try {
         json = JSON.parse(this.jsonString)
       } catch (e) {
-        console.log(e)
+        console.error(e)
         this.errorMessage = "Invalid JSON"
         return
       }
 
       if (!json.data && !json.included) {
-        this.errorMessage = "Unexpected JSON format (no data and/or included)"
+        this.errorMessage =
+          "Unexpected JSON structure: 'data' and/or 'included' properties are missing)"
         return
       }
 
