@@ -13,8 +13,6 @@
 </template>
 
 <script>
-import formatPledge from "../utils/formatPledge.js"
-
 export default {
   name: "Creator",
   props: {
@@ -35,7 +33,13 @@ export default {
     },
   },
   methods: {
-    formatPledge,
+    formatPledge(cents) {
+      const dollars = cents / 100
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(dollars)
+    },
   },
 }
 </script>

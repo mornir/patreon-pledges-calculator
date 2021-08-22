@@ -20,7 +20,7 @@ I wasn't a fan of that approach for 3 reasons:
 
 ## My solution
 
-When browsing my past pledges on patreon.com, I noticed that data was fetched via an API and was in JSON format. By opening that endpoint directly in the browser, I could see the raw data.
+When browsing my billing history on patreon.com, I noticed that data was fetched via an API and was in JSON format. By opening that endpoint directly in the browser, I could see the raw data.
 My idea was then to let the user copy and paste that raw JSON data in my application, and then I would process it for visualization.
 
 And the result works pretty well 😃

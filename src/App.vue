@@ -60,9 +60,11 @@
         </div>
       </section>
       <section v-else>
-        <p class="text-lg font-medium text-center">
+        <p class="text-lg font-medium text-center md:text-xl xl:text-2xl">
           You have pledged a total amount of <br />
-          <span class="font-bold">{{ totalSpent }}</span> over {{ interval }}.
+          <span class="font-bold">{{ totalSpent }}</span>
+          <span v-if="interval"> over {{ interval }}</span
+          >.
         </p>
         <ul class="flex flex-wrap justify-center gap-4 mt-8">
           <li
@@ -80,7 +82,17 @@
 
 <script>
 import { formatDistanceStrict } from "date-fns"
-import formatPledge from "./utils/formatPledge.js"
+import sortBy from "lodash.sortby"
+
+function formatPledge(cents) {
+  const dollars = cents / 100
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(dollars)
+}
+
 import Creator from "./components/Creator.vue"
 export default {
   components: {
@@ -118,14 +130,21 @@ export default {
       const pledges = json.data
       const creatorsMixed = json.included
 
-      this.creators = creatorsMixed
+      const creators = creatorsMixed
         .filter((creatorMix) => creatorMix.type === "campaign")
         .map((creator) => {
+          const dates = []
+
           const pledged = pledges.reduce((total, pledge) => {
             if (pledge.relationships.campaign.data.id !== creator.id)
               return total
+
+            dates.push(pledge.attributes.created_at)
+
             return (total += pledge.attributes.amount_cents)
           }, 0)
+
+          const mostRecentPledge = dates.sort()[dates.length - 1]
 
           return {
             name: creator.attributes.name,
@@ -133,23 +152,31 @@ export default {
             id: creator.id,
             url: creator.attributes.url,
             pledged,
+            mostRecentPledge,
           }
         })
 
+      this.creators = sortBy(creators, ["mostRecentPledge"]).reverse()
+
+      /* Calculate Total pledges */
       this.totalSpent = formatPledge(
         this.creators.reduce((total, creator) => (total += creator.pledged), 0)
       )
 
-      const pledgeDates = pledges
-        .map((pledge) => pledge.attributes.created_at)
-        .sort()
+      /* Calculate Interval */
 
-      console.log(pledgeDates)
+      if (pledges.length >= 2) {
+        const pledgeDates = pledges
+          .map((pledge) => pledge.attributes.created_at)
+          .sort()
 
-      this.interval = formatDistanceStrict(
-        new Date(pledgeDates[0]),
-        new Date(pledgeDates[pledges.length - 1])
-      )
+        this.interval = formatDistanceStrict(
+          new Date(pledgeDates[0]),
+          new Date(pledgeDates[pledges.length - 1])
+        )
+      }
+      /* ************** */
+
       this.creatorsLoaded = true
     },
   },
