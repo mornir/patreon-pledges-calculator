@@ -1,0 +1,124 @@
+<template>
+  <div class="px-4 py-16">
+    <header>
+      <h1
+        class="text-3xl font-bold text-center text-black md:text-4xl font-display"
+      >
+        <span class="text-4xl text-primary">P</span>atreon
+        <span class="text-4xl text-primary">P</span>ledges Calculator
+      </h1>
+
+      <div class="mt-4 text-xl font-medium text-center text-secondary">
+        <p v-if="!creatorsLoaded">Find out how much you've pledged!</p>
+        <p v-else>This is how much you've pledged!</p>
+      </div>
+    </header>
+    <main class="mt-10 text-black font-body">
+      <section v-if="!creatorsLoaded">
+        <p class="mb-1 text-xl font-bold">Follow these steps</p>
+
+        <div class="pt-4 pb-6 border border-light-gray">
+          <ol class="px-4 ml-5 space-y-4 text-lg list-decimal">
+            <li>
+              Make sure you are logged into Patreon in the current browser.
+            </li>
+            <li>
+              Open this
+              <a
+                :href="link"
+                rel="noopener"
+                target="_blank"
+                class="underline text-primary"
+                >link</a
+              >.
+            </li>
+            <li>Copy and paste the text data below.</li>
+          </ol>
+          <form @submit.prevent="calcPledges">
+            <textarea
+              class="w-full p-2 mt-2 border-t border-b resize-none border-light-gray"
+              rows="7"
+              placeholder="Paste content here"
+              required
+              v-model="jsonString"
+            ></textarea>
+            <button
+              class="block px-5 py-2 mx-auto mt-3 font-medium text-white rounded-full bg-primary"
+            >
+              Calculate Pledges
+            </button>
+            <p v-if="errorMessage" class="py-2 font-semibold text-red-dark">
+              ⚠ {{ errorMessage }}
+            </p>
+          </form>
+        </div>
+      </section>
+      <section v-else>
+        <ul class="flex flex-wrap justify-center gap-y-6 gap-x-4">
+          <li v-for="creator in creators" :key="creator.id">
+            <Creator v-bind="creator" />
+          </li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</template>
+
+<script>
+import Creator from "./components/Creator.vue"
+export default {
+  components: {
+    Creator,
+  },
+  data() {
+    return {
+      jsonString: "",
+      creators: [],
+      errorMessage: "",
+      creatorsLoaded: false,
+      link:
+        "https://www.patreon.com/api/bills?use-defaults-for-included-resources=false&include=post.campaign.null%2Ccampaign.null%2Ccard.pledges.campaign.null&fields[campaign]=avatar_photo_url%2Ccover_photo_url%2Cname%2Cpay_per_name%2Cpledge_url%2Curl&fields[post]=title%2Cpublished_at%2Cthumbnail%2Curl%2Cpledge_url&fields[bill]=status%2Camount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmonthly_payment_basis%2Cpatron_fee_cents%2Cbill_type&fields[patronage_purchase]=amount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmerchant_name%2Cjson-api-version=1.0",
+    }
+  },
+  methods: {
+    calcPledges() {
+      this.errorMessage = ""
+      let json
+      try {
+        json = JSON.parse(this.jsonString)
+      } catch (e) {
+        console.log(e)
+        this.errorMessage = "Invalid JSON"
+        return
+      }
+
+      if (!json.data && !json.included) {
+        this.errorMessage = "Unexpected JSON format (no data and/or included)"
+        return
+      }
+
+      const pledges = json.data
+      const creatorsMixed = json.included
+
+      this.creators = creatorsMixed
+        .filter((creatorMix) => creatorMix.type === "campaign")
+        .map((creator) => {
+          const pledged = pledges.reduce((total, pledge) => {
+            if (pledge.relationships.campaign.data.id !== creator.id)
+              return total
+            return (total += pledge.attributes.amount_cents)
+          }, 0)
+
+          return {
+            name: creator.attributes.name,
+            photo: creator.attributes.avatar_photo_url.replace("&amp;", "&"),
+            id: creator.id,
+            url: creator.attributes.url,
+            pledged,
+          }
+        })
+      this.creatorsLoaded = true
+    },
+  },
+}
+</script>
