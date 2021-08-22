@@ -60,7 +60,11 @@
         </div>
       </section>
       <section v-else>
-        <ul class="flex flex-wrap justify-center gap-4">
+        <p class="text-lg font-medium text-center">
+          You have pledged a total amount of <br />
+          <span class="font-bold">{{ totalSpent }}</span> over two years.
+        </p>
+        <ul class="flex flex-wrap justify-center gap-4 mt-8">
           <li
             v-for="creator in creators"
             :key="creator.id"
@@ -75,6 +79,7 @@
 </template>
 
 <script>
+import formatPledge from "./utils/formatPledge.js"
 import Creator from "./components/Creator.vue"
 export default {
   components: {
@@ -86,6 +91,7 @@ export default {
       creators: [],
       errorMessage: "",
       creatorsLoaded: false,
+      totalSpent: 0,
       link:
         "https://www.patreon.com/api/bills?use-defaults-for-included-resources=false&include=post.campaign.null%2Ccampaign.null%2Ccard.pledges.campaign.null&fields[campaign]=avatar_photo_url%2Ccover_photo_url%2Cname%2Cpay_per_name%2Cpledge_url%2Curl&fields[post]=title%2Cpublished_at%2Cthumbnail%2Curl%2Cpledge_url&fields[bill]=status%2Camount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmonthly_payment_basis%2Cpatron_fee_cents%2Cbill_type&fields[patronage_purchase]=amount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmerchant_name%2Cjson-api-version=1.0",
     }
@@ -127,6 +133,10 @@ export default {
             pledged,
           }
         })
+
+      this.totalSpent = formatPledge(
+        this.creators.reduce((total, creator) => (total += creator.pledged), 0)
+      )
       this.creatorsLoaded = true
     },
   },
