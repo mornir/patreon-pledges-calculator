@@ -62,7 +62,7 @@
       <section v-else>
         <p class="text-lg font-medium text-center">
           You have pledged a total amount of <br />
-          <span class="font-bold">{{ totalSpent }}</span> over two years.
+          <span class="font-bold">{{ totalSpent }}</span> over {{ interval }}.
         </p>
         <ul class="flex flex-wrap justify-center gap-4 mt-8">
           <li
@@ -79,6 +79,7 @@
 </template>
 
 <script>
+import { formatDistanceStrict } from "date-fns"
 import formatPledge from "./utils/formatPledge.js"
 import Creator from "./components/Creator.vue"
 export default {
@@ -92,6 +93,7 @@ export default {
       errorMessage: "",
       creatorsLoaded: false,
       totalSpent: 0,
+      interval: null,
       link:
         "https://www.patreon.com/api/bills?use-defaults-for-included-resources=false&include=post.campaign.null%2Ccampaign.null%2Ccard.pledges.campaign.null&fields[campaign]=avatar_photo_url%2Ccover_photo_url%2Cname%2Cpay_per_name%2Cpledge_url%2Curl&fields[post]=title%2Cpublished_at%2Cthumbnail%2Curl%2Cpledge_url&fields[bill]=status%2Camount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmonthly_payment_basis%2Cpatron_fee_cents%2Cbill_type&fields[patronage_purchase]=amount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmerchant_name%2Cjson-api-version=1.0",
     }
@@ -136,6 +138,17 @@ export default {
 
       this.totalSpent = formatPledge(
         this.creators.reduce((total, creator) => (total += creator.pledged), 0)
+      )
+
+      const pledgeDates = pledges
+        .map((pledge) => pledge.attributes.created_at)
+        .sort()
+
+      console.log(pledgeDates)
+
+      this.interval = formatDistanceStrict(
+        new Date(pledgeDates[0]),
+        new Date(pledgeDates[pledges.length - 1])
       )
       this.creatorsLoaded = true
     },
