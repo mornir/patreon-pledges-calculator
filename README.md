@@ -2,6 +2,8 @@
 
 > Find out how much money you've pledged to each Patreon creator.
 
+<img width="277" alt="screenshot" src="https://user-images.githubusercontent.com/1411843/130349351-a2145b0d-ae0f-4693-bda9-0aca4388c568.PNG">
+
 ## Introduction
 
 On patreon.com, I didn't find a way to get an overview of my total pledges for the different creators I've been supporting. My search for 3rd party tools or applications also didn't bear fruits.

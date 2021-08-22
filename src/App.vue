@@ -19,7 +19,7 @@
         <p v-else>This is how much you've pledged!</p>
       </div>
     </header>
-    <main class="mt-10 text-black font-body lg:mt-20">
+    <main class="mt-10 text-black font-body lg:mt-12">
       <section v-if="!creatorsLoaded">
         <p class="mb-1 text-xl font-bold">Follow these steps</p>
 
