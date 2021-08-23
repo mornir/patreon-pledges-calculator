@@ -47,9 +47,11 @@
               placeholder="Paste content here"
               required
               v-model="jsonString"
+              data-cy="json-textarea"
             ></textarea>
             <button
               class="block px-5 py-2 mx-auto mt-3 font-medium text-white rounded-full bg-primary"
+              data-cy="json-button"
             >
               Calculate Pledges
             </button>
@@ -66,7 +68,10 @@
           <span v-if="interval"> over {{ interval }}</span
           >.
         </p>
-        <ul class="flex flex-wrap justify-center gap-4 mt-8">
+        <ul
+          class="flex flex-wrap justify-center gap-4 mt-8"
+          data-cy="creators-list"
+        >
           <li
             v-for="creator in creators"
             :key="creator.id"
