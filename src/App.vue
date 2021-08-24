@@ -75,9 +75,12 @@
             <option value="amount">highest pledged</option>
           </select>
         </div>
-        <ul
+
+        <transition-group
+          tag="ul"
           class="flex flex-wrap justify-center gap-4 mt-2"
           data-cy="creators-list"
+          move-class="duration-700 ease-in-out transform"
         >
           <li
             v-for="creator in sortedCreators"
@@ -86,7 +89,7 @@
           >
             <Creator v-bind="creator" class="p-4" />
           </li>
-        </ul>
+        </transition-group>
       </section>
     </main>
   </div>
