@@ -7,6 +7,7 @@ import manyPledges from "../fixtures/manyPledges.json"
 const textarea = "textarea[data-cy=json-textarea]"
 const button = "button[data-cy=json-button]"
 const creatorsList = "ul[data-cy=creators-list]"
+const sortCreators = "select[data-cy=sort-creators]"
 
 describe("Sad Paths", () => {
   beforeEach(() => {
@@ -50,13 +51,40 @@ describe("Sad Paths", () => {
         .should("contain", "$10.00")
     })
 
-    it("handles many pledges", () => {
+    it.only("handles many pledges and sort them", () => {
       const stringObject = JSON.stringify(manyPledges)
 
       cy.get(textarea).clear().invoke("val", stringObject).trigger("input")
       cy.get(button).click()
 
       cy.contains("You have pledged a total amount of $233 over 4 years.")
+
+      cy.get(sortCreators).should("have.value", "time")
+
+      cy.get(creatorsList + " li")
+        .should("have.length", 20)
+        .first("")
+        .should("contain", "Da Peng - 大鹏")
+        .should("contain", "$10.00")
+
+      cy.get(creatorsList + " li")
+        .last()
+        .should("contain", "John Leider")
+        .should("contain", "$50.00")
+
+      cy.get(sortCreators).select("highest pledged")
+
+      cy.get(creatorsList + " li")
+        .first()
+        .should("contain", "John Leider")
+        .should("contain", "$50.00")
+
+      cy.get(creatorsList + " li")
+        .last()
+        .should("contain", "evanyou")
+        .should("contain", "$1.00")
+
+      cy.get(sortCreators).select("recently pledged")
 
       cy.get(creatorsList + " li")
         .should("have.length", 20)

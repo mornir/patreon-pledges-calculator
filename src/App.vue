@@ -34,7 +34,7 @@
                 :href="link"
                 rel="noopener"
                 target="_blank"
-                class="underline text-primary"
+                class="underline text-blue"
                 >link</a
               >.
             </li>
@@ -68,12 +68,19 @@
           <span v-if="interval"> over {{ interval }}</span
           >.
         </p>
+        <div class="flex justify-end mt-8">
+          <span class="text-secondary">Sort by</span
+          ><select v-model="sortBy" data-cy="sort-creators">
+            <option value="time">recently pledged</option>
+            <option value="amount">highest pledged</option>
+          </select>
+        </div>
         <ul
-          class="flex flex-wrap justify-center gap-4 mt-8"
+          class="flex flex-wrap justify-center gap-4 mt-2"
           data-cy="creators-list"
         >
           <li
-            v-for="creator in creators"
+            v-for="creator in sortedCreators"
             :key="creator.id"
             class="w-40 border border-light-gray"
           >
@@ -111,9 +118,19 @@ export default {
       creatorsLoaded: false,
       totalSpent: 0,
       interval: null,
+      sortBy: "time",
       link:
         "https://www.patreon.com/api/bills?use-defaults-for-included-resources=false&include=post.campaign.null%2Ccampaign.null%2Ccard.pledges.campaign.null&fields[campaign]=avatar_photo_url%2Ccover_photo_url%2Cname%2Cpay_per_name%2Cpledge_url%2Curl&fields[post]=title%2Cpublished_at%2Cthumbnail%2Curl%2Cpledge_url&fields[bill]=status%2Camount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmonthly_payment_basis%2Cpatron_fee_cents%2Cbill_type&fields[patronage_purchase]=amount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmerchant_name%2Cjson-api-version=1.0",
     }
+  },
+  computed: {
+    sortedCreators() {
+      if (this.sortBy === "time") {
+        return sortBy(this.creators, ["mostRecentPledge"]).reverse()
+      } else {
+        return sortBy(this.creators, ["pledged"]).reverse()
+      }
+    },
   },
   methods: {
     calcPledges() {
@@ -136,7 +153,7 @@ export default {
       const pledges = json.data
       const creatorsMixed = json.included
 
-      const creators = creatorsMixed
+      this.creators = creatorsMixed
         .filter((creatorMix) => creatorMix.type === "campaign")
         .map((creator) => {
           const dates = []
@@ -161,8 +178,6 @@ export default {
             mostRecentPledge,
           }
         })
-
-      this.creators = sortBy(creators, ["mostRecentPledge"]).reverse()
 
       /* Calculate Total pledges */
       this.totalSpent = formatPledge(
