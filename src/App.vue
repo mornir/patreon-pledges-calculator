@@ -69,8 +69,13 @@
           >.
         </p>
         <div class="flex justify-end mt-8">
-          <span class="text-secondary">Sort by</span
-          ><select v-model="sortBy" data-cy="sort-creators">
+          <label for="sort-creators" class="text-secondary">Sort by</label
+          ><select
+            id="sort-creators"
+            v-model="sortBy"
+            data-cy="sort-creators"
+            class="outline-none focus-visible:ring"
+          >
             <option value="time">recently pledged</option>
             <option value="amount">highest pledged</option>
           </select>
@@ -118,7 +123,7 @@ export default {
       jsonString: "",
       creators: [],
       errorMessage: "",
-      creatorsLoaded: false,
+      creatorsLoaded: true,
       totalSpent: 0,
       interval: null,
       sortBy: "time",
