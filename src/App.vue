@@ -85,7 +85,7 @@
           tag="ul"
           class="flex flex-wrap justify-center gap-4 mt-2"
           data-cy="creators-list"
-          move-class="duration-700 ease-in-out transform"
+          move-class="motion-safe:duration-1000 motion-safe:ease-in-out"
         >
           <li
             v-for="creator in sortedCreators"
@@ -123,7 +123,7 @@ export default {
       jsonString: "",
       creators: [],
       errorMessage: "",
-      creatorsLoaded: true,
+      creatorsLoaded: false,
       totalSpent: 0,
       interval: null,
       sortBy: "time",
