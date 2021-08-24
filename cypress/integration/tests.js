@@ -51,7 +51,7 @@ describe("Sad Paths", () => {
         .should("contain", "$10.00")
     })
 
-    it.only("handles many pledges and sort them", () => {
+    it("handles many pledges and sort them", () => {
       const stringObject = JSON.stringify(manyPledges)
 
       cy.get(textarea).clear().invoke("val", stringObject).trigger("input")
