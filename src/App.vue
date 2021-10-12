@@ -110,6 +110,7 @@
           *One or more pledges was converted to USD using
           <a
             href="https://github.com/mornir/patreon-pledges-calculator/blob/master/src/utils/toUSD.js"
+            target="_blank"
             class="underline text-blue"
           >
             these fixed exchange rates</a
