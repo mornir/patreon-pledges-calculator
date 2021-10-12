@@ -173,7 +173,7 @@ export default {
           const dates = []
 
           const pledged = pledges.reduce((total, pledge) => {
-            // only add up pledges to belonging to the current iterated creator
+            // Only add up pledges to belonging to the current iterated creator
             if (pledge.relationships.campaign.data.id !== creator.id)
               return total
 
