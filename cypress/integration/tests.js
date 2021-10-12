@@ -52,7 +52,7 @@ describe("Sad Paths", () => {
         .should("contain", "$10.00")
     })
 
-    it.only("handles many pledges and sort them", () => {
+    it("handles many pledges and sort them", () => {
       const stringObject = JSON.stringify(manyPledges)
 
       cy.get(textarea).clear().invoke("val", stringObject).trigger("input")
@@ -99,13 +99,13 @@ describe("Sad Paths", () => {
         .should("contain", "$50.00")
     })
 
-    it("handles different currency", () => {
+    it.only("handles different currency", () => {
       const stringObject = JSON.stringify(foreignCurrency)
 
       cy.get(textarea).clear().invoke("val", stringObject).trigger("input")
       cy.get(button).click()
 
-      cy.get("#3233677").contains("$10.21")
+      cy.get("#3233677").contains("$10.00")
     })
   })
 })

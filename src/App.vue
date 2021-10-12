@@ -107,6 +107,7 @@
 <script>
 import { formatDistanceStrict } from "date-fns"
 import sortBy from "lodash.sortby"
+import toUSD from "./utils/toUSD"
 
 import Creator from "./components/Creator.vue"
 
@@ -188,7 +189,7 @@ export default {
 
             // If pledge currency doesn't match user selected currency, then convert it
             if (currency && currency !== this.selectedCurrency) {
-              amountCents *= 1.16
+              amountCents = toUSD({ currency, amount: amountCents })
             }
 
             return (total += amountCents)
