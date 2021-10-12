@@ -106,6 +106,7 @@ describe("Sad Paths", () => {
       cy.get(button).click()
 
       cy.get("#3233677").contains("$10.00")
+      cy.contains("You have pledged a total amount of $267 over 4 years.")
     })
   })
 })
