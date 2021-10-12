@@ -34,4 +34,4 @@ When Patreon was launched, it only supported the US dollar. However between Augu
 Adding multi-currency support to the Patreon Pledges Calculator is more complicated than it first seems, especially knowing that a Patreon user can change its currency at any time.
 I also lack the motivation for such a feature, because I don't have a use for it personally.
 
-In that regard, I chose the simplest solution possible by converting all non-USD pledges to USD, using fixed, hardcoded exchange rates for all currencies available on Patreon.
+In that regard, I chose the simplest solution possible by converting all non-USD pledges to USD, using fixed, hardcoded exchange rates for all the 7 currencies.

@@ -11,5 +11,6 @@ export default function toUSD({ amount, currency }) {
     SEK: 0.109,
   }
 
+  // TODO: Handle case where base currency is not found. This will happen when Patreon adds new currencies.
   return amount * rates[currency]
 }
