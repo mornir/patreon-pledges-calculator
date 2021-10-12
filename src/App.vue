@@ -101,6 +101,20 @@
             <Creator v-bind="creator" class="p-4" />
           </li>
         </transition-group>
+
+        <p
+          id="conversion-notice"
+          class="mt-8 text-sm text-secondary"
+          v-if="showConversionNotice"
+        >
+          *One or more pledges was converted to USD using
+          <a
+            href="https://github.com/mornir/patreon-pledges-calculator/blob/master/src/utils/toUSD.js"
+            class="underline text-blue"
+          >
+            these fixed exchange rates</a
+          >.
+        </p>
       </section>
     </main>
   </div>
@@ -125,6 +139,7 @@ export default {
       creatorsLoaded: false,
       interval: null,
       sortBy: "time",
+      showConversionNotice: false,
       link:
         "https://www.patreon.com/api/bills?use-defaults-for-included-resources=false&include=post.campaign.null%2Ccampaign.null%2Ccard.pledges.campaign.null&fields[campaign]=avatar_photo_url%2Ccover_photo_url%2Cname%2Cpay_per_name%2Cpledge_url%2Curl&fields[post]=title%2Cpublished_at%2Cthumbnail%2Curl%2Cpledge_url&fields[bill]=status%2Camount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmonthly_payment_basis%2Cbill_type%2Ccurrency&fields[patronage_purchase]=amount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmerchant_name%2Ccurrency%2Cjson-api-version=1.0",
     }
@@ -211,6 +226,10 @@ export default {
             conversionTimes,
           }
         })
+
+      this.showConversionNotice = this.creators.some(
+        (creator) => creator.conversionTimes !== 0
+      )
 
       /* Calculate period between first and last pledge */
 

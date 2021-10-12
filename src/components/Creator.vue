@@ -14,8 +14,9 @@
       >{{ name }}</a
     >
 
-    <p class="text-xl font-medium text-center">
-      {{ formatPledge(pledged) }}<span v-if="conversionTimes">*</span>
+    <p class="text-xl font-medium text-center" data-cy="pledged">
+      {{ formatPledge(pledged)
+      }}<a v-if="conversionTimes" href="#conversion-notice">*</a>
     </p>
   </div>
 </template>

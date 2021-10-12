@@ -99,14 +99,16 @@ describe("Sad Paths", () => {
         .should("contain", "$50.00")
     })
 
-    it.only("handles different currency", () => {
+    it("handles different currency", () => {
       const stringObject = JSON.stringify(foreignCurrency)
 
       cy.get(textarea).clear().invoke("val", stringObject).trigger("input")
       cy.get(button).click()
 
-      cy.get("#3233677").contains("$10.00")
+      cy.get("#3233677 [data-cy=pledged]").should("have.text", "$10.00*")
       cy.contains("You have pledged a total amount of $267 over 4 years.")
+
+      cy.get("#conversion-notice").should("be.visible")
     })
   })
 })
