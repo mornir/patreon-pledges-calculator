@@ -14,7 +14,9 @@
       >{{ name }}</a
     >
 
-    <p class="text-xl font-medium text-center">{{ formatPledge(pledged) }}</p>
+    <p class="text-xl font-medium text-center">
+      {{ formatPledge(pledged) }}<span v-if="conversionTimes">*</span>
+    </p>
   </div>
 </template>
 
@@ -40,6 +42,11 @@ export default {
     url: {
       type: String,
       default: "https://www.patreon.com",
+      required: true,
+    },
+    conversionTimes: {
+      type: Number,
+      default: 0,
       required: true,
     },
   },

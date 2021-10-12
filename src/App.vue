@@ -176,34 +176,39 @@ export default {
       this.creators = creatorsMixed
         .filter((creatorMix) => creatorMix.type === "campaign")
         .map((creator) => {
-          const dates = []
+          // Filter pledges belonging to the current iterated creator
+          const creatorPledges = pledges.filter(
+            (pledge) => pledge.relationships.campaign.data.id === creator.id
+          )
 
-          const pledged = pledges.reduce((total, pledge) => {
-            // Only add up pledges to belonging to the current iterated creator
-            if (pledge.relationships.campaign.data.id !== creator.id)
-              return total
+          // Find most recent pledge
+          const pledgesDates = creatorPledges.map(
+            (pledge) => pledge.attributes.created_at
+          )
+          const mostRecentPledge = pledgesDates.sort()[pledgesDates.length - 1]
 
-            dates.push(pledge.attributes.created_at)
+          let conversionTimes = 0
 
+          const pledged = creatorPledges.reduce((total, pledge) => {
             const currency = pledge.attributes?.currency
             let amountCents = pledge.attributes.amount_cents
 
             if (currency && currency !== "USD") {
               amountCents = toUSD({ currency, amount: amountCents })
+              conversionTimes++
             }
 
             return (total += amountCents)
           }, 0)
 
-          const mostRecentPledge = dates.sort()[dates.length - 1]
-
           return {
             name: creator.attributes.name,
-            photo: creator.attributes.avatar_photo_url.replace("&amp;", "&"),
+            photo: creator.attributes.avatar_photo_url.replace("&amp;", "&"), // fix special caracter in URL
             id: creator.id,
             url: creator.attributes.url,
             pledged,
             mostRecentPledge,
+            conversionTimes,
           }
         })
 
