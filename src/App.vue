@@ -58,6 +58,12 @@
             <p v-if="errorMessage" class="py-2 text-xl font-bold text-red-dark">
               ⚠️ {{ errorMessage }}
             </p>
+
+            <p class="px-2 mt-4 text-xs text-center text-secondary">
+              All data are processed directly inside your web browser.
+              <br class="lg:hidden" />
+              No data is shared.
+            </p>
           </form>
         </div>
       </section>
