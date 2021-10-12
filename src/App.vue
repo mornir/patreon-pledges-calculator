@@ -92,7 +92,11 @@
             :key="creator.id"
             class="w-40 border border-light-gray"
           >
-            <Creator v-bind="creator" class="p-4" />
+            <Creator
+              v-bind="creator"
+              class="p-4"
+              :currency="selectedCurrency"
+            />
           </li>
         </transition-group>
       </section>
