@@ -1,6 +1,7 @@
 # Patreon Pledges Calculator
 
 > Find out how much money you've pledged to each Patreon creator.
+> https://patreon-pledges-calculator.netlify.app
 
 <img width="277" alt="screenshot" src="https://user-images.githubusercontent.com/1411843/130349351-a2145b0d-ae0f-4693-bda9-0aca4388c568.PNG">
 
