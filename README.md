@@ -26,3 +26,12 @@ My idea was then to let the user copy and paste that raw JSON data in my applica
 And the result works pretty well 😃
 Look for yourself:
 https://patreon-pledges-calculator.netlify.app
+
+## Handling foreign currencies
+
+When Patreon was launched, it only supported the US dollar. However between August 2020 and today (October 2021), 7 new currencies have been added (EUR, AUD, NOK, CAD, GBP, DKK, SEK). In my case, I keep pledging in USD because my currency (CHF) is not supported. And even if it was supported, I would probably keep pledging in USD to avoid that the creators I support have to pay the [2.5% exchange rates](https://support.patreon.com/hc/en-us/articles/360044469871).
+
+Adding multi-currency support to the Patreon Pledges Calculator is more complicated than it first seems, especially knowing that a Patreon user can change its currency at any time.
+I also lack the motivation for such a feature, because I don't have a use for it personally.
+
+In that regard, I chose the simplest solution possible by converting all non-USD pledges to USD, using fixed, hardcoded exchange rates for all the 7 currencies.

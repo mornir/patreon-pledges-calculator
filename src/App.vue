@@ -103,17 +103,10 @@
 <script>
 import { formatDistanceStrict } from "date-fns"
 import sortBy from "lodash.sortby"
-
-function formatPledge(cents) {
-  const dollars = cents / 100
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(dollars)
-}
+import toUSD from "./utils/toUSD"
 
 import Creator from "./components/Creator.vue"
+
 export default {
   components: {
     Creator,
@@ -124,11 +117,10 @@ export default {
       creators: [],
       errorMessage: "",
       creatorsLoaded: false,
-      totalSpent: 0,
       interval: null,
       sortBy: "time",
       link:
-        "https://www.patreon.com/api/bills?use-defaults-for-included-resources=false&include=post.campaign.null%2Ccampaign.null%2Ccard.pledges.campaign.null&fields[campaign]=avatar_photo_url%2Ccover_photo_url%2Cname%2Cpay_per_name%2Cpledge_url%2Curl&fields[post]=title%2Cpublished_at%2Cthumbnail%2Curl%2Cpledge_url&fields[bill]=status%2Camount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmonthly_payment_basis%2Cpatron_fee_cents%2Cbill_type&fields[patronage_purchase]=amount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmerchant_name%2Cjson-api-version=1.0",
+        "https://www.patreon.com/api/bills?use-defaults-for-included-resources=false&include=post.campaign.null%2Ccampaign.null%2Ccard.pledges.campaign.null&fields[campaign]=avatar_photo_url%2Ccover_photo_url%2Cname%2Cpay_per_name%2Cpledge_url%2Curl&fields[post]=title%2Cpublished_at%2Cthumbnail%2Curl%2Cpledge_url&fields[bill]=status%2Camount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmonthly_payment_basis%2Cbill_type%2Ccurrency&fields[patronage_purchase]=amount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmerchant_name%2Ccurrency%2Cjson-api-version=1.0",
     }
   },
   computed: {
@@ -138,6 +130,20 @@ export default {
       } else {
         return sortBy(this.creators, ["pledged"]).reverse()
       }
+    },
+    /* Calculate Total pledges among all creators */
+    totalSpent() {
+      const formatCurrency = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0,
+      })
+      const cents = this.creators.reduce(
+        (total, creator) => (total += creator.pledged),
+        0
+      )
+      const units = cents / 100
+      return formatCurrency.format(units)
     },
   },
   methods: {
@@ -167,13 +173,20 @@ export default {
           const dates = []
 
           const pledged = pledges.reduce((total, pledge) => {
-            // only add up pledges to belonging to the current iterated creator
+            // Only add up pledges to belonging to the current iterated creator
             if (pledge.relationships.campaign.data.id !== creator.id)
               return total
 
             dates.push(pledge.attributes.created_at)
 
-            return (total += pledge.attributes.amount_cents)
+            const currency = pledge.attributes?.currency
+            let amountCents = pledge.attributes.amount_cents
+
+            if (currency && currency !== "USD") {
+              amountCents = toUSD({ currency, amount: amountCents })
+            }
+
+            return (total += amountCents)
           }, 0)
 
           const mostRecentPledge = dates.sort()[dates.length - 1]
@@ -188,12 +201,7 @@ export default {
           }
         })
 
-      /* Calculate Total pledges */
-      this.totalSpent = formatPledge(
-        this.creators.reduce((total, creator) => (total += creator.pledged), 0)
-      )
-
-      /* Calculate Interval */
+      /* Calculate period between first and last pledge */
 
       if (pledges.length >= 2) {
         const pledgeDates = pledges

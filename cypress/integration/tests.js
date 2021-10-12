@@ -3,6 +3,7 @@
 
 import onePledge from "../fixtures/onePledge.json"
 import manyPledges from "../fixtures/manyPledges.json"
+import foreignCurrency from "../fixtures/foreignCurrency.json"
 
 const textarea = "textarea[data-cy=json-textarea]"
 const button = "button[data-cy=json-button]"
@@ -96,6 +97,16 @@ describe("Sad Paths", () => {
         .last()
         .should("contain", "John Leider")
         .should("contain", "$50.00")
+    })
+
+    it.only("handles different currency", () => {
+      const stringObject = JSON.stringify(foreignCurrency)
+
+      cy.get(textarea).clear().invoke("val", stringObject).trigger("input")
+      cy.get(button).click()
+
+      cy.get("#3233677").contains("$10.00")
+      cy.contains("You have pledged a total amount of $267 over 4 years.")
     })
   })
 })

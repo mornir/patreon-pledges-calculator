@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     formatPledge(cents) {
-      const dollars = cents / 100
+      const dollars = (cents / 100).toFixed(0)
       return new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
