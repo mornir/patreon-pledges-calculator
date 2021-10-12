@@ -31,18 +31,13 @@ export default {
       default: 0,
       required: true,
     },
-    currency: {
-      type: String,
-      required: true,
-      default: "USD",
-    },
   },
   methods: {
     formatPledge(cents) {
       const dollars = (cents / 100).toFixed(0)
       return new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: this.currency,
+        currency: "USD",
       }).format(dollars)
     },
   },

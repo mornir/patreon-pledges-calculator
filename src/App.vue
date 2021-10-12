@@ -92,11 +92,7 @@
             :key="creator.id"
             class="w-40 border border-light-gray"
           >
-            <Creator
-              v-bind="creator"
-              class="p-4"
-              :currency="selectedCurrency"
-            />
+            <Creator v-bind="creator" class="p-4" />
           </li>
         </transition-group>
       </section>
@@ -123,7 +119,6 @@ export default {
       creatorsLoaded: false,
       interval: null,
       sortBy: "time",
-      selectedCurrency: "USD",
       link:
         "https://www.patreon.com/api/bills?use-defaults-for-included-resources=false&include=post.campaign.null%2Ccampaign.null%2Ccard.pledges.campaign.null&fields[campaign]=avatar_photo_url%2Ccover_photo_url%2Cname%2Cpay_per_name%2Cpledge_url%2Curl&fields[post]=title%2Cpublished_at%2Cthumbnail%2Curl%2Cpledge_url&fields[bill]=status%2Camount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmonthly_payment_basis%2Cbill_type%2Ccurrency&fields[patronage_purchase]=amount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmerchant_name%2Ccurrency%2Cjson-api-version=1.0",
     }
@@ -140,7 +135,7 @@ export default {
     totalSpent() {
       const formatCurrency = new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: this.selectedCurrency,
+        currency: "USD",
         maximumFractionDigits: 0,
       })
       const cents = this.creators.reduce(
@@ -187,8 +182,7 @@ export default {
             const currency = pledge.attributes?.currency
             let amountCents = pledge.attributes.amount_cents
 
-            // If pledge currency doesn't match user selected currency, then convert it
-            if (currency && currency !== this.selectedCurrency) {
+            if (currency && currency !== "USD") {
               amountCents = toUSD({ currency, amount: amountCents })
             }
 
