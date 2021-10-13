@@ -67,106 +67,31 @@
           </form>
         </div>
       </section>
-      <section v-else>
-        <p class="text-lg font-medium text-center md:text-xl xl:text-2xl">
-          You have pledged a total amount of <br />
-          <span class="font-bold">{{ totalSpent }}</span>
-          <span v-if="interval"> over {{ interval }}</span
-          >.
-        </p>
-        <div class="flex justify-end mt-8">
-          <label for="sort-creators" class="text-secondary">Sort by</label
-          ><select
-            id="sort-creators"
-            v-model="sortBy"
-            data-cy="sort-creators"
-            class="outline-none focus-visible:ring"
-          >
-            <option value="time">recently pledged</option>
-            <option value="amount">highest pledged</option>
-          </select>
-        </div>
-
-        <transition-group
-          tag="ul"
-          class="flex flex-wrap justify-center gap-4 mt-2"
-          data-cy="creators-list"
-          move-class="motion-safe:duration-1000 motion-safe:ease-in-out"
-        >
-          <li
-            v-for="creator in sortedCreators"
-            :key="creator.id"
-            class="w-40 border border-light-gray"
-          >
-            <Creator v-bind="creator" class="p-4" />
-          </li>
-        </transition-group>
-
-        <p
-          id="conversion-notice"
-          class="mt-8 text-sm text-secondary"
-          v-if="showConversionNotice"
-        >
-          *One or more pledges was converted to USD using
-          <a
-            href="https://github.com/mornir/patreon-pledges-calculator/blob/master/src/utils/toUSD.js"
-            target="_blank"
-            class="underline text-blue"
-          >
-            these fixed exchange rates</a
-          >.
-        </p>
-      </section>
+      <CreatorsList v-else :creators="creators" :interval="interval" />
     </main>
   </div>
 </template>
 
 <script>
 import { formatDistanceStrict } from "date-fns"
-import sortBy from "lodash.sortby"
+import CreatorsList from "./components/CreatorsList.vue"
+
 import toUSD from "./utils/toUSD"
 
-import Creator from "./components/Creator.vue"
-
 export default {
-  components: {
-    Creator,
-  },
   data() {
     return {
       jsonString: "",
       creators: [],
       errorMessage: "",
       creatorsLoaded: false,
-      interval: null,
-      sortBy: "time",
-      showConversionNotice: false,
+      interval: "",
       link:
         "https://www.patreon.com/api/bills?use-defaults-for-included-resources=false&include=post.campaign.null%2Ccampaign.null%2Ccard.pledges.campaign.null&fields[campaign]=avatar_photo_url%2Ccover_photo_url%2Cname%2Cpay_per_name%2Cpledge_url%2Curl&fields[post]=title%2Cpublished_at%2Cthumbnail%2Curl%2Cpledge_url&fields[bill]=status%2Camount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmonthly_payment_basis%2Cbill_type%2Ccurrency&fields[patronage_purchase]=amount_cents%2Ccreated_at%2Cvat_charge_amount_cents%2Cmerchant_name%2Ccurrency%2Cjson-api-version=1.0",
     }
   },
-  computed: {
-    sortedCreators() {
-      if (this.sortBy === "time") {
-        return sortBy(this.creators, ["mostRecentPledge"]).reverse()
-      } else {
-        return sortBy(this.creators, ["pledged"]).reverse()
-      }
-    },
-    /* Calculate Total pledges among all creators */
-    totalSpent() {
-      const formatCurrency = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 0,
-      })
-      const cents = this.creators.reduce(
-        (total, creator) => (total += creator.pledged),
-        0
-      )
-      const units = cents / 100
-      return formatCurrency.format(units)
-    },
+  components: {
+    CreatorsList,
   },
   methods: {
     calcPledges() {
@@ -198,13 +123,12 @@ export default {
           )
 
           // Find most recent pledge
-          const pledgesDates = creatorPledges.map(
-            (pledge) => pledge.attributes.created_at
-          )
-          const mostRecentPledge = pledgesDates.sort()[pledgesDates.length - 1]
+          const pledgesDates = creatorPledges
+            .map((pledge) => pledge.attributes.created_at)
+            .sort()
+          const mostRecentPledge = pledgesDates[pledgesDates.length - 1]
 
           let conversionTimes = 0
-
           const pledged = creatorPledges.reduce((total, pledge) => {
             const currency = pledge.attributes?.currency
             let amountCents = pledge.attributes.amount_cents
@@ -228,12 +152,7 @@ export default {
           }
         })
 
-      this.showConversionNotice = this.creators.some(
-        (creator) => creator.conversionTimes !== 0
-      )
-
-      /* Calculate period between first and last pledge */
-
+      // Calculate period between first and last pledge
       if (pledges.length >= 2) {
         const pledgeDates = pledges
           .map((pledge) => pledge.attributes.created_at)
@@ -244,7 +163,6 @@ export default {
           new Date(pledgeDates[pledges.length - 1])
         )
       }
-      /* ************** */
 
       this.creatorsLoaded = true
     },
