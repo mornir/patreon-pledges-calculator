@@ -1,8 +1,11 @@
 <template>
   <section>
-    <p class="text-lg font-medium text-center md:text-xl xl:text-2xl">
+    <p
+      class="px-6 py-4 mx-auto text-lg font-medium text-center border md:text-xl xl:text-2xl border-light-gray"
+      style="width: fit-content"
+    >
       You have pledged a total amount of <br />
-      <span class="font-bold">{{ totalSpent }}</span>
+      <span>about {{ totalSpent }}</span>
       <span v-if="interval"> over {{ interval }}</span
       >.
     </p>

@@ -43,7 +43,7 @@ describe("Sad Paths", () => {
       cy.get(textarea).clear().invoke("val", stringObject).trigger("input")
       cy.get(button).click()
 
-      cy.contains("You have pledged a total amount of $10.")
+      cy.contains("You have pledged a total amount of about $10.")
 
       cy.get(creatorsList + " li")
         .should("have.length", 1)
@@ -58,7 +58,7 @@ describe("Sad Paths", () => {
       cy.get(textarea).clear().invoke("val", stringObject).trigger("input")
       cy.get(button).click()
 
-      cy.contains("You have pledged a total amount of $233 over 4 years.")
+      cy.contains("You have pledged a total amount of about $233 over 4 years.")
 
       cy.get(sortCreators).should("have.value", "time")
 
@@ -106,7 +106,7 @@ describe("Sad Paths", () => {
       cy.get(button).click()
 
       cy.get("#3233677 [data-cy=pledged]").should("have.text", "$10.00*")
-      cy.contains("You have pledged a total amount of $267 over 4 years.")
+      cy.contains("You have pledged a total amount of about $267 over 4 years.")
 
       cy.get("#conversion-notice").should("be.visible")
     })

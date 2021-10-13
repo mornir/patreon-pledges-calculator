@@ -69,6 +69,13 @@
       </section>
       <CreatorsList v-else :creators="creators" :interval="interval" />
     </main>
+    <footer class="mt-16 text-center">
+      <a
+        href="https://github.com/mornir/patreon-pledges-calculator/issues"
+        class="text-black underline"
+        >Report a bug or propose a new feature</a
+      >
+    </footer>
   </div>
 </template>
 
