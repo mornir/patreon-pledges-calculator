@@ -36,3 +36,6 @@ Adding multi-currency support to the Patreon Pledges Calculator is more complica
 I also lack the motivation for such a feature, because I don't have a use for it personally.
 
 In that regard, I chose the simplest solution possible by converting all non-USD pledges to USD, using fixed, hardcoded exchange rates for all the 7 currencies.
+
+## Further reading
+I wrote a [blog post](https://dev.to/mornir/weekend-hack-patreon-pledges-calculator-19m9) where I give more technical information.
